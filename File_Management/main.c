@@ -3,21 +3,17 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "files_utils.h"
+#include "utils.h"
 #include "contiguous.h"
 #include "linked.h"
 #include "indexed.h"
 
-#ifndef FILE_MANAGEMENT_H
-#define FILE_MANAGEMENT_H
-
-void file_management();
 void create_file();
 void delete_file();
 void show_directory();
 
 // main shell
-void file_management(){
+int main() {
     char command[50];
     printf("📁 Mini File System Simulator\n");
     printf("-----------------------------------------\n");
@@ -61,6 +57,8 @@ void file_management(){
             printf("Type 'help' for available commands.\n");
         }
     }
+
+    return 0;
 }
 
 // --- Create File ---
@@ -134,4 +132,3 @@ void show_directory() {
     printf("-----------------------------------------\n");
 }
 
-#endif

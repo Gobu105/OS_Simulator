@@ -18,7 +18,7 @@ void shell() {
     printf("🧰 Available OS Commands / Modules:\n");
     printf("------------------------------------------------------------\n");
     printf(" process      → Simulate Process Management\n");
-    printf(" cpu                    → Simulate CPU Scheduling\n");
+    printf(" cpu          → Simulate CPU Scheduling\n");
     printf(" memory       → Simulate Memory Management\n");
     printf(" file         → Simulate File Management\n");
     printf(" sync         → Simulate Synchronization\n");
