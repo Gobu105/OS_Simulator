@@ -19,9 +19,8 @@ void show_directory();
 // main shell
 void file_management(){
     char command[50];
-    printf("📁 Mini File System Simulator\n");
-    printf("-----------------------------------------\n");
-    printf("Type 'help' to see commands.\n\n");
+    print_header("📁 Mini File System Simulator");
+    cyan("Type 'help' to see commands.\n\n");
 
     while (1) {
         printf("> ");
@@ -29,12 +28,16 @@ void file_management(){
         command[strcspn(command, "\n")] = 0; // remove newline
 
         if (strcmp(command, "help") == 0) {
-            printf("\nAvailable Commands:\n");
+            cyan("\nAvailable Commands:\n");
             printf(" bit       → Show Bit Vector\n");
             printf(" create    → Create New File\n");
             printf(" show      → Show Directory\n");
             printf(" delete    → Delete File\n");
+            printf(" clear     → Clear Screen\n");
             printf(" exit      → Exit Simulator\n\n");
+        }
+        else if (strcmp(command, "clear") == 0) {
+            system("clear");
         }
         else if (strcmp(command, "bit") == 0) {
             display_bit_vector();
@@ -49,7 +52,7 @@ void file_management(){
             delete_file();
         }
         else if (strcmp(command, "exit") == 0) {
-            printf("💾 Exiting file system...\n");
+            red("💾 Exiting file system...\n");
             sleep(1);
             break;
         }
@@ -57,8 +60,8 @@ void file_management(){
             continue;
         }
         else {
-            printf("❓ Unknown command: %s\n", command);
-            printf("Type 'help' for available commands.\n");
+            red("❓ Unknown command: %s\n");
+            cyan("Type 'help' for available commands.\n");
         }
     }
 }
@@ -69,9 +72,9 @@ void create_file() {
     int size;
     int method;
 
-    printf("Enter file name: ");
+    yellow("Enter file name: ");
     scanf("%s", name);
-    printf("Enter file size (in blocks): ");
+    yellow("Enter file size (in blocks): ");
     scanf("%d", &size);
     getchar(); // clear input buffer
 
@@ -81,8 +84,8 @@ void create_file() {
     }
     
     printf("\nChoose allocation method:\n");
-    printf(" 1 → Contiguous\n 2 → Linked\n 3 → Indexed\n");
-    printf("Enter choice: ");
+    cyan(" 1 → Contiguous\n 2 → Linked\n 3 → Indexed\n");
+    yellow("Enter choice: ");
     scanf("%d", &method);
     getchar();
 
@@ -92,7 +95,7 @@ void create_file() {
     if (free_count < size) {
         printf("❌ Not enough free blocks. Only %d blocks available.\n", free_count);
         if (free_count >= 1 && free_count < size)
-            printf("💡 Suggestion: Try Linked allocation (it can use scattered blocks).\n");
+            cyan("💡 Suggestion: Try Linked allocation (it can use scattered blocks).\n");
         return;
     }
 
@@ -107,7 +110,7 @@ void create_file() {
             indexed_allocation(name, size);
             break;
         default:
-            printf("Invalid method.\n");
+            red("Invalid method.\n");
             return;
     }
 }
@@ -115,19 +118,19 @@ void create_file() {
 // --- Delete File ---
 void delete_file() {
     char name[30];
-    printf("Enter file name to delete: ");
+    yellow("Enter file name to delete: ");
     scanf("%s", name);
     getchar();
 
     if (delete_contiguous(name) || delete_linked(name) || delete_indexed(name))
-        printf("🗑️  File '%s' deleted successfully.\n", name);
+        green("🗑️  File deleted successfully.\n");
     else
-        printf("❌ File '%s' not found.\n", name);
+        red("❌ File not found.\n");
 }
 
 // --- Show Directory ---
 void show_directory() {
-    printf("\n📂 Directory Listing:\n");
+    cyan("\n📂 Directory Listing:\n");
     show_contiguous_files();
     show_linked_files();
     show_indexed_files();

@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
 #include "../utils.h"
 #include "fcfs.h"
 #include "sjf.h"
@@ -5,44 +10,59 @@
 #include "pp.h"
 #include "pnp.h"
 #include "rr.h"
+
 #ifndef CPU_SCHEDULING_H
 #define CPU_SCHEDULING_H
 
-void cpu_scheduling(){
-    char cmd[64], alg[16];
-    int n = 0, quantum = 2;
-    Process *procs = NULL;
+void cpu_scheduling();
 
-    printf("Scheduling Shell. Commands:\n");
-    printf("  scheduling   - enter processes\n");
-    printf("  gantt [alg]  - show Gantt chart for all or specific algorithm\n");
-    printf("  table [alg]  - show table for all or specific algorithm\n");
-    printf("  average      - show avg WT and TAT of all algorithms\n");
-    printf("  quantum x    - set RR time quantum\n");
-    printf("  quit         - exit\n");
+// --- Main Shell ---
+void cpu_scheduling() {
+    char command[64];
+    char alg[16];
+    int n = 0, quantum = 2;
+    PCB *procs = NULL;
+
+    print_header("💻 CPU Scheduling Simulator");
+    cyan("Type 'help' to see available commands.\n\n");
 
     while (1) {
-        printf("\n> ");
-        if (scanf("%63s", cmd) != 1)
+        printf("> ");
+        fgets(command, sizeof(command), stdin);
+        command[strcspn(command, "\n")] = 0; // remove newline
+
+        if (strlen(command) == 0) continue;
+
+        if (strcmp(command, "help") == 0) {
+            cyan("\nAvailable Commands:\n");
+            printf(" scheduling   → Enter processes\n");
+            printf(" gantt [alg]  → Show Gantt chart for all or specific algorithm\n");
+            printf(" table [alg]  → Show table for all or specific algorithm\n");
+            printf(" average      → Show average WT and TAT of all algorithms\n");
+            printf(" quantum x    → Set RR time quantum\n");
+            printf(" clear        → Clear the screen\n");
+            printf(" exit         → Exit simulator\n\n");
+        }
+
+        else if (strcmp(command, "exit") == 0) {
+            red("💾 Exiting CPU scheduling simulator...\n");
+            sleep(1);
             break;
-
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
-
-        if (!strcmp(cmd, "quit"))
-            break;
-
-        else if (!strcmp(cmd, "scheduling")) {
-            printf("Enter number of processes: ");
-            if (scanf("%d", &n) != 1 || n <= 0) {   // ✅ Validation
-                printf("❌ Invalid number of processes. Try again.\n");
-                while ((c = getchar()) != '\n' && c != EOF);
+        }
+        else if (strcmp(command, "clear") == 0) {
+            system("clear");
+        }
+        else if (strcmp(command, "scheduling") == 0) {
+            yellow("Enter number of processes: ");
+            if (scanf("%d", &n) != 1 || n <= 0) {
+                red("❌ Invalid number of processes.\n");
+                while (getchar() != '\n');
                 continue;
             }
 
-            free(procs); // free old memory if re-running scheduling
-            procs = (Process*) malloc(sizeof(Process) * n);
-            if (!procs) {   // ✅ Validation
+            free(procs);
+            procs = (PCB*) malloc(sizeof(PCB) * n);
+            if (!procs) {
                 fprintf(stderr, "❌ Memory allocation failed.\n");
                 exit(1);
             }
@@ -54,8 +74,8 @@ void cpu_scheduling(){
                 do {
                     printf("Process %d - Arrival Time: ", i + 1);
                     if (scanf("%d", &procs[i].at) != 1 || procs[i].at < 0) {
-                        printf("❌ Invalid input! Arrival time must be >= 0.\n");
-                        while ((c = getchar()) != '\n' && c != EOF);
+                        red("❌ Invalid input! Arrival time must be >= 0.\n");
+                        while (getchar() != '\n');
                         continue;
                     }
                     break;
@@ -65,8 +85,8 @@ void cpu_scheduling(){
                 do {
                     printf("Process %d - Burst Time: ", i + 1);
                     if (scanf("%d", &procs[i].bt) != 1 || procs[i].bt <= 0) {
-                        printf("❌ Invalid input! Burst time must be > 0.\n");
-                        while ((c = getchar()) != '\n' && c != EOF);
+                        red("❌ Invalid input! Burst time must be > 0.\n");
+                        while (getchar() != '\n');
                         continue;
                     }
                     break;
@@ -76,10 +96,11 @@ void cpu_scheduling(){
                 procs[i].rt_time = procs[i].bt;
             }
 
+            // Priority entry for PP/PNP
             int need_prio = 0;
-            printf("Do you want to enter priorities for PP/PNP? (1/0): ");
-            if (scanf("%d", &need_prio) != 1 || (need_prio != 0 && need_prio != 1)) { // ✅ Validation
-                printf("Invalid input, skipping priority entry.\n");
+            yellow("Do you want to enter priorities for PP/PNP? (1/0): ");
+            if (scanf("%d", &need_prio) != 1 || (need_prio != 0 && need_prio != 1)) {
+                cyan("Skipping priority entry.\n");
                 need_prio = 0;
             }
 
@@ -88,8 +109,8 @@ void cpu_scheduling(){
                     do {
                         printf("Priority for P%d (lower = higher): ", procs[i].pid);
                         if (scanf("%d", &procs[i].priority) != 1 || procs[i].priority < 0) {
-                            printf("❌ Invalid priority! Must be >= 0.\n");
-                            while ((c = getchar()) != '\n' && c != EOF);
+                            red("❌ Invalid priority! Must be >= 0.\n");
+                            while (getchar() != '\n');
                             continue;
                         }
                         break;
@@ -97,114 +118,86 @@ void cpu_scheduling(){
                 }
             }
 
+            // RR Quantum
             do {
-                printf("Enter time quantum for RR (suggested 2): ");
-                if (scanf("%d", &quantum) != 1 || quantum <= 0) {  // ✅ Validation
-                    printf("❌ Invalid quantum! Must be > 0.\n");
-                    while ((c = getchar()) != '\n' && c != EOF);
+                yellow("Enter time quantum for RR (suggested 2): ");
+                if (scanf("%d", &quantum) != 1 || quantum <= 0) {
+                    red("❌ Invalid quantum! Must be > 0.\n");
+                    while (getchar() != '\n');
                     continue;
                 }
                 break;
             } while (1);
 
-            while ((c = getchar()) != '\n' && c != EOF);
-            printf("✅ Processes entered successfully.\n");
+            while (getchar() != '\n'); // clear buffer
+            green("✅ Processes entered successfully.\n");
         }
 
-        else if (!strcmp(cmd, "quantum")) {
-            printf("Enter RR time quantum: ");
-            if (scanf("%d", &quantum) != 1 || quantum <= 0) {  // ✅ Validation
-                printf("❌ Invalid quantum value.\n");
-            } else {
+        else if (strncmp(command, "quantum", 7) == 0) {
+            int q;
+            if (sscanf(command + 7, "%d", &q) == 1 && q > 0) {
+                quantum = q;
                 printf("RR quantum set to %d\n", quantum);
+            } else {
+                red("❌ Invalid quantum value.\n");
             }
-            while ((c = getchar()) != '\n' && c != EOF);
         }
 
-        else if (!strcmp(cmd, "gantt") || !strcmp(cmd, "table")) {
-            int show_gantt = !strcmp(cmd, "gantt");
-            int show_table = !strcmp(cmd, "table");
+        else if (strncmp(command, "gantt", 5) == 0 || strncmp(command, "table", 5) == 0) {
+            int show_gantt = strncmp(command, "gantt", 5) == 0;
+            int show_table = strncmp(command, "table", 5) == 0;
 
             if (n == 0 || !procs) {
-                printf("❌ No processes entered yet. Use 'scheduling' first.\n");
+                red("❌ No processes entered yet. Use 'scheduling' first.\n");
                 continue;
             }
-            do {
-              printf("Enter algorithm name (all/fcfs/sjf/srt/pp/pnp/rr): ");
-              if (scanf("%15s", alg) != 1) {
-                strcpy(alg, "all");
-                break;
-              }
-              if (!is_valid_algo(alg)) {
-                printf("❌ Invalid algorithm name. Please try again.\n");
-              }
-            } while (!is_valid_algo(alg));
-            while ((c = getchar()) != '\n' && c != EOF);
+
+            yellow("Enter algorithm name (all/fcfs/sjf/srt/pp/pnp/rr): ");
+            fgets(alg, sizeof(alg), stdin);
+            alg[strcspn(alg, "\n")] = 0;
+            if (!is_valid_algo(alg)) strcpy(alg, "all");
 
             if (show_gantt) {
-                if (!strcmp(alg, "fcfs") || !strcmp(alg, "all"))
-                    fcfsgantt(procs, n);
-                if (!strcmp(alg, "sjf") || !strcmp(alg, "all"))
-                    sjfgantt(procs, n);
-                if (!strcmp(alg, "srt") || !strcmp(alg, "all"))
-                    srtgantt(procs, n);
-                if (!strcmp(alg, "pnp") || !strcmp(alg, "all"))
-                    pnpgantt(procs, n);
-                if (!strcmp(alg, "pp") || !strcmp(alg, "all"))
-                    ppgantt(procs, n);
-                if (!strcmp(alg, "rr") || !strcmp(alg, "all"))
-                    rrgantt(procs, n, quantum);
+                if (!strcmp(alg, "fcfs") || !strcmp(alg, "all")) fcfsgantt(procs, n);
+                if (!strcmp(alg, "sjf") || !strcmp(alg, "all")) sjfgantt(procs, n);
+                if (!strcmp(alg, "srt") || !strcmp(alg, "all")) srtgantt(procs, n);
+                if (!strcmp(alg, "pp")  || !strcmp(alg, "all")) ppgantt(procs, n);
+                if (!strcmp(alg, "pnp") || !strcmp(alg, "all")) pnpgantt(procs, n);
+                if (!strcmp(alg, "rr")  || !strcmp(alg, "all")) rrgantt(procs, n, quantum);
             }
 
             if (show_table) {
-                if (!strcmp(alg, "fcfs") || !strcmp(alg, "all"))
-                    fcfs(procs, n);
-                if (!strcmp(alg, "sjf") || !strcmp(alg, "all"))
-                    sjf(procs, n);
-                if (!strcmp(alg, "srt") || !strcmp(alg, "all"))
-                    srt(procs, n);
-                if (!strcmp(alg, "pnp") || !strcmp(alg, "all"))
-                    pnp(procs, n);
-                if (!strcmp(alg, "pp") || !strcmp(alg, "all"))
-                    pp(procs, n);
-                if (!strcmp(alg, "rr") || !strcmp(alg, "all"))
-                    rr(procs, n, quantum);
+                if (!strcmp(alg, "fcfs") || !strcmp(alg, "all")) fcfs(procs, n);
+                if (!strcmp(alg, "sjf") || !strcmp(alg, "all")) sjf(procs, n);
+                if (!strcmp(alg, "srt") || !strcmp(alg, "all")) srt(procs, n);
+                if (!strcmp(alg, "pp")  || !strcmp(alg, "all")) pp(procs, n);
+                if (!strcmp(alg, "pnp") || !strcmp(alg, "all")) pnp(procs, n);
+                if (!strcmp(alg, "rr")  || !strcmp(alg, "all")) rr(procs, n, quantum);
             }
         }
 
-        else if (!strcmp(cmd, "average")) {
+        else if (strcmp(command, "average") == 0) {
             if (n == 0 || !procs) {
-                printf("❌ No processes entered yet. Use 'scheduling' first.\n");
+                red("❌ No processes entered yet. Use 'scheduling' first.\n");
                 continue;
             }
-            do {
-              printf("Enter algorithm name (all/fcfs/sjf/srt/pp/pnp/rr): ");
-              if (scanf("%15s", alg) != 1) {
-                strcpy(alg, "all");
-                break;
-              }
-              if (!is_valid_algo(alg)) {
-                printf("❌ Invalid algorithm name. Please try again.\n");
-              }
-            } while (!is_valid_algo(alg));
-            while ((c = getchar()) != '\n' && c != EOF);
 
-            if (!strcmp(alg, "fcfs") || !strcmp(alg, "all"))
-                fcfsaverage(procs, n);
-            if (!strcmp(alg, "sjf") || !strcmp(alg, "all"))
-                sjfaverage(procs, n);
-            if (!strcmp(alg, "srt") || !strcmp(alg, "all"))
-                srtaverage(procs, n);
-            if (!strcmp(alg, "pnp") || !strcmp(alg, "all"))
-                pnpaverage(procs, n);
-            if (!strcmp(alg, "pp") || !strcmp(alg, "all"))
-                ppaverage(procs, n);
-            if (!strcmp(alg, "rr") || !strcmp(alg, "all"))
-                rraverage(procs, n, quantum);
+            yellow("Enter algorithm name (all/fcfs/sjf/srt/pp/pnp/rr): ");
+            fgets(alg, sizeof(alg), stdin);
+            alg[strcspn(alg, "\n")] = 0;
+            if (!is_valid_algo(alg)) strcpy(alg, "all");
+
+            if (!strcmp(alg, "fcfs") || !strcmp(alg, "all")) fcfsaverage(procs, n);
+            if (!strcmp(alg, "sjf") || !strcmp(alg, "all")) sjfaverage(procs, n);
+            if (!strcmp(alg, "srt") || !strcmp(alg, "all")) srtaverage(procs, n);
+            if (!strcmp(alg, "pp")  || !strcmp(alg, "all")) ppaverage(procs, n);
+            if (!strcmp(alg, "pnp") || !strcmp(alg, "all")) pnpaverage(procs, n);
+            if (!strcmp(alg, "rr")  || !strcmp(alg, "all")) rraverage(procs, n, quantum);
         }
 
         else {
-            printf("❌ Unknown command. Try again.\n");
+            red("❓ Unknown command!!\n");
+            cyan("Type 'help' for available commands.\n");
         }
     }
 
@@ -212,3 +205,4 @@ void cpu_scheduling(){
 }
 
 #endif
+

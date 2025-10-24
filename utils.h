@@ -14,27 +14,25 @@
 #define MAX_FILES 50
 #define MAX_BLOCKS_PER_FILE 20
 
-
 typedef struct {
     int pid;
     int at;    /* Arrival Time */
     int bt;    /* Burst Time */
     int rt_time; /* Remaining Time (used in preemptive algos) */
-    int priority; /* lower value -> higher priority */
-
-    /* computed */
-    int start_time; /* first time the process gets CPU */
+    int priority;
+    int start_time;
     int completion_time;
     int tat; /* Turnaround time */
     int wt;  /* Waiting time */
     int resp; /* Response time */
-} Process;
+    char state[20];
+} PCB;
 
 void print_gantt_pair(int pid, int s, int e) {
     printf("| P%d (%d-%d) ", pid, s, e);
 }
 
-void print_table(Process procs[], int n, int with_priority) {
+void print_table(PCB procs[], int n, int with_priority) {
     int i;
     double total_wt = 0, total_tat = 0, total_rt = 0;
     if (with_priority) {
@@ -49,14 +47,14 @@ void print_table(Process procs[], int n, int with_priority) {
 }
 
 /* Copy processes array */
-Process *copy_procs(Process src[], int n) {
-    Process *dst = malloc(sizeof(Process) * n);
+PCB *copy_procs(PCB src[], int n) {
+    PCB *dst = malloc(sizeof(PCB) * n);
     for (int i = 0; i < n; ++i) dst[i] = src[i];
     return dst;
 }
 
 /* Average Time Calculator */
-void print_average(Process procs[], int n){
+void print_average(PCB procs[], int n){
     int i;
     double total_wt = 0, total_tat = 0, total_rt = 0;
     for (i = 0; i < n; ++i) {
@@ -65,6 +63,12 @@ void print_average(Process procs[], int n){
         total_rt += procs[i].resp;
     }
     printf("\nAvg WT = %.2f\nAvg TAT = %.2f\nAvg RT = %.2f\n", total_wt / n, total_tat / n, total_rt / n);
+}
+
+/* ---------- State Updater (if not already in utils) ---------- */
+void update_state(PCB *p, const char *new_state) {
+    strcpy(p->state, new_state);
+    printf("Process P%d → %s\n", p->pid, p->state);
 }
 
 int is_valid_algo(const char *alg) {
@@ -107,7 +111,7 @@ int indexed_index_blocks[MAX_FILES];
 int indexed_file_blocks[MAX_FILES][MAX_BLOCKS_PER_FILE];
 int indexed_length[MAX_FILES];
 int indexed_count = 0;
-
+  
 void display_bit_vector() {
     printf("\n📊 Bit Vector:\n");
     for (int i = 0; i < MAX_BLOCKS; i++) {
@@ -131,6 +135,10 @@ void yellow(const char *text) {
 
 void cyan(const char *text) {
     printf("\033[1;36m%s\033[0m", text);
+}
+
+void magenta(const char *text) {
+    printf("\033[1;35m%s\033[0m", text);
 }
 
 void print_header(const char *title) {

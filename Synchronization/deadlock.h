@@ -10,9 +10,9 @@ void run_bankers() {
     int n, m; // n = number of processes, m = number of resources
     int **alloc, **max, **need, *avail;
 
-    printf("Enter number of processes: ");
+    yellow("Enter number of processes: ");
     scanf("%d", &n);
-    printf("Enter number of resources: ");
+    yellow("Enter number of resources: ");
     scanf("%d", &m);
 
     // Allocate memory for matrices
@@ -43,14 +43,12 @@ void run_bankers() {
     for (int i = 0; i < m; i++)
         scanf("%d", &avail[i]);
 
-    print_header("Banker's Algorithm - Deadlock Avoidance");
-
     // Calculate Need matrix
     for (int i = 0; i < n; i++)
         for (int j = 0; j < m; j++)
             need[i][j] = max[i][j] - alloc[i][j];
 
-    printf("\nNeed Matrix:\n");
+    cyan("\nNeed Matrix:\n");
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++)
             printf("%d ", need[i][j]);

@@ -9,6 +9,7 @@
 #include "thread.h"
 #include "sync.h"
 #include "deadlock.h"
+#include "../utils.h"
 
 // Main shell entry
 void synchronization();
@@ -16,17 +17,16 @@ void synchronization();
 // --- Shell Implementation ---
 void synchronization() {
     char command[50];
-    printf("🔁 OS Synchronization Simulator\n");
-    printf("-----------------------------------------\n");
-    printf("Type 'help' to see available commands.\n\n");
+    print_header("🔁 OS Synchronization Simulator");
+    cyan("Type 'help' to see available commands.\n\n");
 
     while (1) {
-        printf("sync> ");
+        printf("\nsync> ");
         fgets(command, sizeof(command), stdin);
         command[strcspn(command, "\n")] = 0; // remove newline
 
         if (strcmp(command, "help") == 0) {
-            printf("\nAvailable Commands:\n");
+            cyan("\nAvailable Commands:\n");
             printf(" threads    → Run Thread Synchronization Demo\n");
             printf(" sem        → Run Semaphore Example\n");
             printf(" deadlock   → Run Banker's Algorithm (Deadlock Detection)\n");
@@ -34,15 +34,15 @@ void synchronization() {
             printf(" exit       → Exit Simulator\n\n");
         }
         else if (strcmp(command, "threads") == 0) {
-            printf("\n🧵 Running Thread Synchronization Demo...\n");
+            cyan("\n🧵 Running Thread Synchronization Demo...\n");
             demo_threads();
         }
         else if (strcmp(command, "sem") == 0) {
-            printf("\n🚦 Running Semaphore Example...\n");
+            cyan("\n🚦 Running Semaphore Example...\n");
             demo_semaphore();
         }
         else if (strcmp(command, "deadlock") == 0) {
-            printf("\n⚙️  Running Banker's Algorithm...\n");
+            cyan("\n⚙️  Running Banker's Algorithm...\n");
             run_bankers();
         }
         else if (strcmp(command, "clear") == 0) {
@@ -53,7 +53,7 @@ void synchronization() {
 #endif
         }
         else if (strcmp(command, "exit") == 0) {
-            printf("\n👋 Exiting Synchronization Simulator...\n");
+            red("\n👋 Exiting Synchronization Simulator...\n");
             sleep(1);
             break;
         }
@@ -61,8 +61,8 @@ void synchronization() {
             continue;
         }
         else {
-            printf("❓ Unknown command: %s\n", command);
-            printf("Type 'help' for available commands.\n");
+            red("❓ Unknown command!!\n");
+            cyan("Type 'help' for available commands.\n");
         }
     }
 }

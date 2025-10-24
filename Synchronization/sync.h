@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
+#include "../utils.h"
 
 sem_t mutex;
 
@@ -19,8 +20,6 @@ void* sem_worker(void* arg) {
 
 void demo_semaphore() {
     pthread_t t1, t2, t3;
-
-    printf("\n--- Semaphore Synchronization Demo ---\n");
     sem_init(&mutex, 0, 1);
 
     pthread_create(&t1, NULL, sem_worker, NULL);

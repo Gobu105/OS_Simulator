@@ -13,7 +13,7 @@ void simulate_state_transitions() {
 
     for (int i = 0; i < MAX_PROCESSES; i++) {
         strcpy(process_table[i].state, "READY");
-        yellow("Process moved to READY state\n");
+        printf("\033[1;031mProcess %d moved to READY state\n\033[0m",i);
         delay(300);
 
         strcpy(process_table[i].state, "RUNNING");

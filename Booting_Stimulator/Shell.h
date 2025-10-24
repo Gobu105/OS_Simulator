@@ -10,12 +10,13 @@
 #include"../Memory_Management/memory_management.h"
 #include"../File_Management/file_management.h"
 #include"../Synchronization/synchronization.h"
+#include"../utils.h"
 
 void shell() {
     char command[50];
 
-    printf("🐚 Shell: Welcome to Mini OS!\n\n");
-    printf("🧰 Available OS Commands / Modules:\n");
+    print_header("🐚 Shell: Welcome to Mini OS!");
+    cyan("🧰 Available OS Commands / Modules:\n");
     printf("------------------------------------------------------------\n");
     printf(" process      → Simulate Process Management\n");
     printf(" cpu          → Simulate CPU Scheduling\n");
@@ -26,20 +27,20 @@ void shell() {
     printf(" clear        → Clear the screen\n");
     printf(" exit         → Shut down system\n\n");
     printf("------------------------------------------------------------\n\n");
-    printf("Type 'help' to see available commands or 'exit' to shut down.\n\n");
+    cyan("Type 'help' to see available commands or 'exit' to shut down.\n\n");
 
     while (1) {
         printf("mini-os> ");
         fgets(command, sizeof(command), stdin);
         command[strcspn(command, "\n")] = 0; // remove newline
 
-        if (strcmp(command, "exit") == 0) {
-            printf("🔚 Shutting down...\n");
+        if (strcmp(command, "exit") == 0  ) {
+            yellow("🔚 Shutting down...\n");
             sleep(2);
             break;
         } 
         else if (strcmp(command, "help") == 0) {
-            printf("\nAvailable Commands:\n");
+            cyan("\nAvailable Commands:\n");
             printf(" process      → Simulate Process Management\n");
             printf(" cpu          → Simulate CPU Scheduling\n");
             printf(" memory       → Simulate Memory Management\n");
@@ -74,8 +75,8 @@ void shell() {
             continue; // ignore empty input
         }
         else {
-            printf("❓ Unknown command: %s\n", command);
-            printf("Type 'help' to see available commands.\n\n");
+            red("❓ Unknown command!!\n");
+            cyan("Type 'help' to see available commands.\n\n");
         }
     }
 }

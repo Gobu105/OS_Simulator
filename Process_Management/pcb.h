@@ -4,15 +4,10 @@
 #define MAX_PROCESSES 5
 #include <stdio.h>
 #include <string.h>
+#include"../utils.h"
 
 void create_process_table();
 void display_processes();
-
-typedef struct {
-    int pid;
-    char state[20];
-    int priority;
-} PCB;
 
 static PCB process_table[MAX_PROCESSES];
 
@@ -22,7 +17,7 @@ void create_process_table() {
         strcpy(process_table[i].state, "NEW");
         process_table[i].priority = i + 1;
     }
-    printf("\nProcess Table Initialized.\n");
+    magenta("\nProcess Table Initialized.\n");
     display_processes();
 }
 

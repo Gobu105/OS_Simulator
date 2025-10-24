@@ -10,6 +10,7 @@
 #include "pcb.h"
 #include "states.h"
 #include "syscalls.h"
+#include "../utils.h"
 
 // Helper: trim leading/trailing whitespace (in-place)
 static void trim_whitespace(char *s) {
@@ -54,7 +55,7 @@ void process_management() {
     char command[128];
 
     print_header("🧠 OS Process Management Simulator");
-    printf("Type 'help' to see available commands.\n\n");
+    cyan("Type 'help' to see available commands.\n\n");
 
     while (1) {
         printf("proc> ");
@@ -62,7 +63,7 @@ void process_management() {
 
         if (fgets(command, sizeof(command), stdin) == NULL) {
             // EOF (Ctrl+D) or read error -> exit cleanly
-            printf("\n\n👋 Input closed. Exiting Process Management Simulator...\n");
+            red("\n\n👋 Input closed. Exiting Process Management Simulator...\n");
             return;
         }
 
@@ -75,7 +76,7 @@ void process_management() {
         }
 
         if (strcmp(command, "help") == 0) {
-            printf("\nAvailable Commands:\n");
+            cyan("\nAvailable Commands:\n");
             printf(" pcb        → Initialize & Display Process Table\n");
             printf(" states     → Simulate Process State Transitions\n");
             printf(" syscalls   → Demonstrate fork(), exec(), wait()\n");
@@ -86,25 +87,25 @@ void process_management() {
         }
 
         if (strcmp(command, "pcb") == 0) {
-            printf("\n📋 Creating Process Table...\n");
+            cyan("\n📋 Creating Process Table...\n");
             create_process_table();
             continue;
         }
 
         if (strcmp(command, "states") == 0) {
-            printf("\n🔄 Simulating Process State Transitions...\n");
+            cyan("\n🔄 Simulating Process State Transitions...\n");
             simulate_state_transitions();
             continue;
         }
 
         if (strcmp(command, "syscalls") == 0) {
-            printf("\n⚙️  Demonstrating System Calls...\n");
+            cyan("\n⚙️  Demonstrating System Calls...\n");
             demo_system_calls();
             continue;
         }
 
         if (strcmp(command, "all") == 0) {
-            printf("\n🚀 Running Full Process Management Demo...\n");
+            cyan("\n🚀 Running Full Process Management Demo...\n");
             create_process_table();
             simulate_state_transitions();
             demo_system_calls();
@@ -121,15 +122,15 @@ void process_management() {
         }
 
         if (strcmp(command, "exit") == 0) {
-            printf("\n👋 Exiting Process Management Simulator...\n");
+            red("\n👋 Exiting Process Management Simulator...\n");
             // short pause for UX (optional)
             sleep(1);
             return; // return from function — ensures clean exit
         }
 
         // unknown command
-        printf("❓ Unknown command: %s\n", command);
-        printf("Type 'help' for available commands.\n");
+        red("❓ Unknown command!!\n");
+        cyan("Type 'help' for available commands.\n");
     } // while
 }
 

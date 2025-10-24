@@ -20,7 +20,6 @@ void* worker(void* arg) {
 // Demo function
 void demo_threads() {
     int n;
-    printf("\n--- 🧠 Thread Synchronization Demo ---\n");
     printf("Enter number of threads to create (1–%d): ", MAX_THREADS);
 
     if (scanf("%d", &n) != 1) {

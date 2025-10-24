@@ -8,11 +8,10 @@
 
 void demo_system_calls() {
     print_header("System Call Simulation (fork, exec, wait)");
-
     pid_t pid = fork();
-
     if (pid == 0) {
         cyan("\n[Child] Process created successfully!\n");
+        sleep(0.5);
         printf("[Child] PID: %d | PPID: %d\n", getpid(), getppid());
         yellow("[Child] Executing new program (simulated exec)\n");
         delay(500);

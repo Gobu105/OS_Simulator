@@ -51,7 +51,7 @@
 |---+----------------------+---------------------------------------------------+-----------------|
 | 4 | Memory Management    | - Memory Management                              | Simulates paging|
 |   |                      | - Virtual Memory / Swapping (partial)            | & page replace. |
-|   |                      |                                                  | Uses arrays to  |
+|   |                      | - Device Managemet                               | Uses arrays to  |
 |   |                      |                                                  | mimic memory.   |
 |---+----------------------+---------------------------------------------------+-----------------|
 | 5 | File Management      | - File Management System                         | Demonstrates    |
