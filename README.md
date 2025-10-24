@@ -69,7 +69,7 @@ Compile with GCC:
 
 
 Copy code
-gcc main.c -o os_simulator
+gcc OS.c -o os_simulator
 Run the simulator:
 
 
