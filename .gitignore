@@ -1,0 +1,6 @@
+# C Build Artifacts
+*.o
+*.exe
+a.out
+os_simulator 
+*.gch
