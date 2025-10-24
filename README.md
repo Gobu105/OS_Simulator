@@ -102,8 +102,6 @@ Directory structure:
     
     │   ├── fcfs.h
     
-    │   ├── main
-    
     │   ├── pnp.h
     
     │   ├── pp.h
@@ -125,8 +123,6 @@ Directory structure:
     │   ├── indexed.h
     
     │   ├── linked.h
-    
-    │   └── main.c
     
     ├── Memory_Management/
     
