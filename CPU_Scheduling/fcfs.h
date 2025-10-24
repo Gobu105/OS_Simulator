@@ -2,7 +2,7 @@
 /* ========================= fcfs.h ========================= */
 #ifndef FCFS_H
 #define FCFS_H
-#include "utils.h"
+#include "../utils.h"
 
 void fcfs(Process input[], int n) {
     print_header("FCFS (First Come First Serve)");

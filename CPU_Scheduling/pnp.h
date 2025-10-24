@@ -2,7 +2,7 @@
 /* ========================= pnp.h (Non-preemptive Priority) ========================= */
 #ifndef PNP_H
 #define PNP_H
-#include "utils.h"
+#include "../utils.h"
 
 void pnp(Process input[], int n) {
     print_header("PNP (Non-preemptive Priority - lower value indicates higher priority)");

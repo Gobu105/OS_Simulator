@@ -2,7 +2,7 @@
 /* ========================= sjf.h (non-preemptive SJF) ========================= */
 #ifndef SJF_H
 #define SJF_H
-#include "utils.h"
+#include "../utils.h"
 
 void sjf(Process input[], int n) {
     print_header("SJF (Non-preemptive)");

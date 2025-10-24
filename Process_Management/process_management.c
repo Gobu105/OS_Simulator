@@ -1,5 +1,3 @@
-#ifndef PROCESS_MANAGEMENT_H
-#define PROCESS_MANAGEMENT_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +8,7 @@
 #include "pcb.h"
 #include "states.h"
 #include "syscalls.h"
+#include "../utils.h"
 
 // Helper: trim leading/trailing whitespace (in-place)
 static void trim_whitespace(char *s) {
@@ -47,10 +46,10 @@ static void trim_whitespace_inplace(char *buf) {
 }
 
 // Main shell entry
-void process_management();
+void process_management_shell();
 
 // --- Shell Implementation ---
-void process_management() {
+void main() {
     char command[128];
 
     print_header("🧠 OS Process Management Simulator");
@@ -132,5 +131,3 @@ void process_management() {
         printf("Type 'help' for available commands.\n");
     } // while
 }
-
-#endif

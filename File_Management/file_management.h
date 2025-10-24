@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "files_utils.h"
+#include "../utils.h"
 #include "contiguous.h"
 #include "linked.h"
 #include "indexed.h"

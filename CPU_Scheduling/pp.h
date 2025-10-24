@@ -3,7 +3,7 @@
 /* ========================= pp.h (Preemptive Priority) ========================= */
 #ifndef PP_H
 #define PP_H
-#include "utils.h"
+#include "../utils.h"
 
 void pp(Process input[], int n) {
     print_header("PP (Preemptive Priority - lower value indicates higher priority)");

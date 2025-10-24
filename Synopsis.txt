@@ -41,7 +41,7 @@
 |---+----------------------+---------------------------------------------------+-----------------|
 | 2 | Process Management   | - Process Management                             | Demonstrates PCB|
 |   |                      | - Process States & Context Switch                | transitions,    |
-|   |                      | - System Calls                                   | process creation|
+|   |                      | x- System Calls                                   | process creation|
 |   |                      |                                                  | via fork/exec.  |
 |---+----------------------+---------------------------------------------------+-----------------|
 | 3 | CPU Scheduling       | - CPU Scheduling                                 | Implements FCFS,|

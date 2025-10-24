@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "files_utils.h"
+#include "../utils.h"
 
 #ifndef INDEXED_H
 #define INDEXED_H

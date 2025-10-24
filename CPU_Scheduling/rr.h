@@ -2,7 +2,7 @@
 /* ========================= rr.h (Round Robin) ========================= */
 #ifndef RR_H
 #define RR_H
-#include "utils.h"
+#include "../utils.h"
 
 /* quantum: time quantum */
 void rr(Process input[], int n, int quantum) {

@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "../utils.h"
 #include "fcfs.h"
 #include "sjf.h"
 #include "srt.h"

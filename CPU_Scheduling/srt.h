@@ -2,7 +2,7 @@
 /* ========================= srt.h (Shortest Remaining Time - preemptive) ========================= */
 #ifndef SRT_H
 #define SRT_H
-#include "utils.h"
+#include "../utils.h"
 
 void srt(Process input[], int n) {
     print_header("SRT (Shortest Remaining Time - Preemptive)");

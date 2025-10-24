@@ -5,13 +5,15 @@
 #include"Booting_Stimulator/BootLoader.h"
 #include"Booting_Stimulator/Kernel.h"
 #include"Booting_Stimulator/Shell.h"
+#include"utils.h"
 
 int main() {
-    printf("💡 Powering ON system...\n\n");
+    print_header("\t    OS_SIMULATOR");
+    green("💡 Powering ON system...\n\n");
     bios();
     bootloader();
     kernel();
     shell();
-    printf("\n💤 System powered off.\n");
+    red("\n💤 System powered off.\n");
     return 0;
 }
